@@ -1,6 +1,6 @@
 var path = require('path');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var OpenBrowserPlugin = require('open-browser-webpack-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 var OpenBrowserPlugin = require('open-browser-webpack-plugin');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
 
@@ -9,7 +9,9 @@ var extrectPlugin = new ExtractTextPlugin({
 });
 
 module.exports = {
-    entry: "./src/js/main.js",
+    entry: {
+        app: "./src/js/main.js"
+    },
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: "bundle.js",
@@ -50,6 +52,18 @@ module.exports = {
                         }
 
                     }
+            },
+            {
+                test: /\.html$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[name].[ext]'
+                        }
+                    }
+                ],
+                exclude: path.resolve(__dirname, 'src/index.html')
             }
         ]
     },
@@ -59,11 +73,14 @@ module.exports = {
         }),
         extrectPlugin,
         new HtmlWebpackPlugin({
+            filename: 'index.html',
             template: 'src/index.html'
         }),
-        new HtmlWebpackPlugin({
-            template: 'src/users.html'
-        }),
+        // new HtmlWebpackPlugin({
+        //     filename: 'users.html',
+        //     template: 'src/users.html',
+        //     chunks: []
+        // }),
         new CleanWebpackPlugin(['dist'])
     ]
 };
